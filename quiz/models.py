@@ -31,3 +31,8 @@ class Answer(models.Model):
 
     def __str__(self):
         return '{}; {}'.format(self.correct, self.text)
+
+
+class Quiz(models.Model):
+    name = models.SlugField(max_length=16, primary_key=True)
+    questions = models.ManyToManyField(Question)
