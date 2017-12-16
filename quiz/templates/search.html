@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+    <body>
+    <div class="ui left vertical visible sidebar">
+        <div class="ui padded segment">
+            <form class="ui filter form" action="" method="get">
+                <div class="field">
+                    <label for="include" class="text">Include tags</label>
+                    <select id="include" name="include" class="ui fluid search dropdown" multiple>
+                        {% for tag in tags %}
+                            <option value="{{ tag }}">{{ tag }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="exclude" class="text">Exclude tags</label>
+                    <select id="exclude" name="exclude" class="ui fluid search dropdown" multiple>
+                        {% for tag in tags %}
+                            <option value="{{ tag }}">{{ tag }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <button class="ui fluid button"><i class="filter icon"></i>Filter</button>
+                </div>
+            </form>
+            <div class="ui divider"></div>
+            <div class="field">
+                <button id="select-all" class="ui fluid button">Select all</button>
+            </div>
+            <div class="ui divider"></div>
+            <div class="field">
+                <button class="ui fluid button" type="submit" form="questions">Start</button>
+            </div>
+        </div>
+    </div>
+    <div class="pusher">
+        <form id="questions" name="questions" action="" method="post">
+            {% csrf_token %}
+            <table class="ui compact celled definition selectable table">
+                <thead class="full-width">
+                <tr>
+                    <th></th>
+                    <th>Question</th>
+                    <th>Answered count</th>
+                    <th>Answered wrong count</th>
+                    <th>Tags</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for question in questions %}
+                    <tr>
+                        <td class="collapsing">
+                            <div class="ui fitted checkbox">
+                                <input title="{{ question.pk }}" name="{{ question.pk }}"
+                                       id="{{ question.pk }}" type="checkbox"> <label></label>
+                            </div>
+                        </td>
+                        <td>{{ question }}</td>
+                        <td>{{ question.get_answer_count }}</td>
+                        <td>{{ question.get_wrong_answer_count }}</td>
+                        <td>{{ question.tags.all|join:", " }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+    </body>
+    <script>
+        $(document).ready(function () {
+            $('#select-all')
+                .on('click', function () {
+                    $('.checkbox').checkbox('check');
+                })
+            ;
+
+            $('form.filter .ui.dropdown')
+                .dropdown({})
+            ;
+
+            $('form.filter .clear.button')
+                .on('click', function () {
+                    $('form.filter .ui.dropdown')
+                        .dropdown('clear')
+                    ;
+                })
+            ;
+
+            $('.selectable tbody > tr')
+                .on('click', function (event) {
+                    console.log(event.target);
+                    if (!$(event.target).is(':checkbox,label')) {
+                        $(this).find('.checkbox').checkbox('toggle');
+                    }
+                })
+            ;
+        })
+    </script>
+{% endblock %}

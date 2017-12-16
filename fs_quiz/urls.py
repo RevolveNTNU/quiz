@@ -19,6 +19,6 @@ from django.urls import path
 import quiz.views
 
 urlpatterns = [
-    path('', quiz.views.QuizView.as_view()),
+    path('', quiz.views.SearchView.as_view()),
     path('admin/', admin.site.urls),
 ]
