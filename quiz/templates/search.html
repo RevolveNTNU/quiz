@@ -33,7 +33,7 @@
             <form id="questions" name="questions" action="{% url 'create_quiz' %}" method="post">
                 {% csrf_token %}
                 <div class="ui form">
-                    <div class="field">
+                    <div class="required field">
                         <label for="name">Name</label>
                         <div class="ui action input">
                             <input id="name" name="name" placeholder="Name" type="text" required>
