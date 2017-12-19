@@ -1,4 +1,65 @@
 {% extends 'base.html' %}
+{% block title %}
+    {{ quiz.name }}
+{% endblock %}
 {% block content %}
-    {{ quiz }}
+    <div class="ui center aligned container">
+        <h1 class="ui header">{{ quiz.name }}</h1>
+        <div class="ui top attached tabular menu">
+            {% for question in quiz.questions.all %}
+                <a class="item {% if forloop.first %}active{% endif %}"
+                   data-tab="{{ forloop.counter }}">{{ forloop.counter }}</a>
+            {% endfor %}
+        </div>
+        <form action="" method="post">
+            {% csrf_token %}
+            {% for question in quiz.questions.all %}
+                <div class="ui bottom attached question tab segment {% if forloop.first %}active{% endif %}"
+                     data-tab="{{ forloop.counter }}">
+                    <h2>{{ question.text }}</h2>
+                    <div class="ui divider"></div>
+                    <div class="ui massive form">
+                        <div class="grouped fields">
+                            {% for answer in question.answer_set.all %}
+                                <div class="field">
+                                    <div class="ui massive radio checkbox">
+                                        <input id="{{ answer.pk }}" name="{{ question.pk }}" value="{{ answer.pk }}"
+                                               tabindex="0"
+                                               type="radio">
+                                        <label for="{{ answer.pk }}">{{ answer.text }}</label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% if forloop.last %}
+                        <button class="ui huge primary button" tabindex="1">Submit<i class="right arrow icon"></i>
+                        </button>
+                    {% else %}
+                        <a class="ui huge primary next button" tabindex="1"
+                           onclick="changeTab({{ forloop.counter|add:1 }})">Next<i class="right arrow icon"></i></a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </form>
+    </div>
+    <script>
+        $('.ui.radio.checkbox')
+            .checkbox()
+        ;
+        $('.tabular.menu .item')
+            .tab()
+        ;
+
+        function changeTab(tab) {
+            $('.tabular.menu .item').tab('change tab', tab)
+        }
+    </script>
+{% endblock %}
+{% block head %}
+    <style>
+        .ui.checkbox.massive {
+            font-size: 2rem;
+        }
+    </style>
 {% endblock %}
