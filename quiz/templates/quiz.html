@@ -5,21 +5,15 @@
 {% block content %}
     <div class="ui center aligned container">
         <h1 class="ui header">{{ quiz.name }}</h1>
-        <div class="ui top attached tabular menu">
-            {% for question in quiz.questions.all %}
-                <a class="item {% if forloop.first %}active{% endif %}"
-                   data-tab="{{ forloop.counter }}">{{ forloop.counter }}</a>
-            {% endfor %}
-        </div>
         <form action="{% url 'quiz_result' quiz.pk %}" method="post">
             {% csrf_token %}
             {% for question in quiz.questions.all %}
-                <div class="ui bottom attached question tab segment {% if forloop.first %}active{% endif %}"
+                <div class="ui question tab segment"
                      data-tab="{{ forloop.counter }}">
                     <h2>{{ question.text }}</h2>
                     <div class="ui divider"></div>
                     <div class="ui massive form">
-                        <div class="grouped fields">
+                        <div class="grouped {{ forloop.counter }} fields">
                             {% for answer in question.answer_set.all %}
                                 <div class="field">
                                     <div class="ui massive radio checkbox">
@@ -33,33 +27,51 @@
                         </div>
                     </div>
                     {% if forloop.last %}
-                        <button class="ui huge primary button" tabindex="1">Submit<i class="right arrow icon"></i>
-                        </button>
+                        <button class="ui huge primary {{ question.pk }} button"
+                                tabindex="1">Submit<i class="right arrow icon"></i></button>
                     {% else %}
                         <a class="ui huge primary next button" tabindex="1"
-                           onclick="changeTab({{ forloop.counter|add:1 }})">Next<i class="right arrow icon"></i></a>
+                           onclick="nextTab()">Next<i class="right arrow icon"></i></a>
                     {% endif %}
                 </div>
             {% endfor %}
         </form>
+        <div id="pagenumber"></div>
     </div>
     <script>
-        $('.ui.radio.checkbox')
-            .checkbox()
+        var tab = 0;
+        var tabs = {{ quiz.questions.count }}
+            $('.ui.radio.checkbox')
+                .checkbox()
         ;
-        $('.tabular.menu .item')
+        $
             .tab()
         ;
 
-        function changeTab(tab) {
-            $('.tabular.menu .item').tab('change tab', tab)
+        function nextTab() {
+            if (++tab > tabs) {
+                $('form').submit();
+            }
+            else {
+                $.tab('change tab', tab);
+                $('.fields.' + tab + ' input').focus();
+                $('#pagenumber').html(tab + ' of ' + tabs)
+            }
         }
+
+        $('input').keypress(function (e) {
+            if (e.which === 13) {
+                nextTab();
+                e.preventDefault()
+            }
+        });
+        nextTab();
     </script>
 {% endblock %}
 {% block head %}
     <style>
         .ui.checkbox.massive {
-            font-size: 2rem;
+            font-size: 1.2em;
         }
     </style>
 {% endblock %}
