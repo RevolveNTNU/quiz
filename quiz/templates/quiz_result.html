@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}
+    Results: {{ quiz.name }}
+{% endblock %}
+{% block content %}
+    <div class="ui center aligned container">
+        <h1 class="ui header">{{ quiz.name }}</h1>
+        {% for question in quiz.questions.all %}
+            <div class="ui question segment">
+                <h2>{{ question.text }}</h2>
+                <div class="ui divider"></div>
+                <div id="{{ question.pk }}" class="ui big list">
+                    {% for answer in question.answer_set.all %}
+                        <span class="{% if answer.correct %}correct{% endif %}
+{% if answer.pk in answered %}answered{% endif %} answer item">{{ answer.text }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+{% block head %}
+    <style>
+        .answer {
+            color: grey;
+        }
+
+        .answered {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: red;
+        }
+
+        .correct {
+            text-decoration: underline;
+            color: black;
+        }
+
+        .answered.correct {
+            color: green;
+        }
+
+        .answered:before {
+            content: 'Galt: ';
+        }
+
+        .correct:before {
+            content: 'Riktig: ';
+        }
+    </style>
+{% endblock %}

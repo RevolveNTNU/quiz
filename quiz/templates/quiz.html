@@ -11,7 +11,7 @@
                    data-tab="{{ forloop.counter }}">{{ forloop.counter }}</a>
             {% endfor %}
         </div>
-        <form action="" method="post">
+        <form action="{% url 'quiz_result' quiz.pk %}" method="post">
             {% csrf_token %}
             {% for question in quiz.questions.all %}
                 <div class="ui bottom attached question tab segment {% if forloop.first %}active{% endif %}"
