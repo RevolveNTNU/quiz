@@ -14,7 +14,7 @@
                     <div class="ui divider"></div>
                     <div class="ui massive form">
                         <div class="grouped {{ forloop.counter }} fields">
-                            {% for answer in question.answer_set.all %}
+                            {% for answer in question.shuffled_answers %}
                                 <div class="field">
                                     <div class="ui massive radio checkbox">
                                         <input id="{{ answer.pk }}" name="{{ question.pk }}" value="{{ answer.pk }}"

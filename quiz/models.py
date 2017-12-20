@@ -19,6 +19,9 @@ class Question(models.Model):
         return self.answer_set.filter(correct=False).aggregate(
             models.Sum('answered'))['answered__sum']
 
+    def shuffled_answers(self):
+        return self.answer_set.order_by('?')
+
     def __str__(self):
         return self.text
 
