@@ -47,7 +47,7 @@ class QuizResultView(generic.DetailView):
         for question in quiz.questions.all():
             try:
                 answer_pk = int(self.request.POST.get(str(question.pk)))
-            except ValueError:
+            except TypeError:
                 break
             # Atomic incrementation
             question.answer_set.filter(pk=answer_pk).update(answered=F('answered') + 1)
@@ -67,4 +67,4 @@ class QuizCreateView(generic.View):
         questions = request.POST.getlist('questions')
         quiz, _ = Quiz.objects.get_or_create(name=name)
         quiz.questions.set(questions)
-        return HttpResponseRedirect(reverse('quiz', args=(name)))
+        return HttpResponseRedirect(reverse('quiz', args=(name,)))
