@@ -74,6 +74,7 @@ class QuizCreateView(generic.View):
 class QuestionCreateView(generic.TemplateView):
     template_name = 'createQuestion.html'
     model = Question
+    submitted = None
 
     extra_context = {
         'tags': Tag.objects.all()
@@ -87,4 +88,5 @@ class QuestionCreateView(generic.TemplateView):
         for option in params.getlist('incorrect-options'):
             Answer.objects.create(text=option, question=question, correct=False)
         Answer.objects.create(text=params['answer'], question=question, correct=True)
+        self.submitted = question
         return self.get(self, request, *args, **kwargs)

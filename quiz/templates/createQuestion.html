@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+    {% if view.submitted %}
+        <h1>"{{ view.submitted }}" submitted.</h1>
+    {% endif %}
     <form class="ui create form" action="" method="post">
         {% csrf_token %}
         <div class="field">
