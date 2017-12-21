@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form class="ui create form" action="" method="post">
+        {% csrf_token %}
+        <div class="field">
+            <label for="question">Question</label>
+            <input id="question" name="question" type="text">
+        </div>
+        <div class="field">
+            <label for="tags">Tags</label>
+            <select id="tags" name="tags" class="ui fluid search dropdown" multiple>
+                {% for tag in tags %}
+                    <option value="{{ tag }}">{{ tag }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="field">
+            <label for="answer">Correct Answer</label>
+            <input id="answer" name="answer" type="text">
+        </div>
+        <div class="field">
+            <label for="option2">First Wrong Option</label>
+            <input id="option2" name="incorrect-options" type="text">
+        </div>
+        <div class="field">
+            <label for="option3">Second Wrong Option</label>
+            <input id="option3" name="incorrect-options" type="text">
+        </div>
+        <div class="field">
+            <label for="option4">Third Wrong Option</label>
+            <input id="option4" name="incorrect-options" type="text">
+        </div>
+        <div class="field">
+            <label for="option5">Fourth Wrong Option</label>
+            <input id="option5" name="incorrect-options" type="text">
+        </div>
+        <div class="field">
+            <label for="option6">Fifth Wrong Option</label>
+            <input id="option6" name="incorrect-options" type="text">
+        </div>
+        <button class="ui button">Submit</button>
+    </form>
+    <script>
+        $('.ui.dropdown')
+            .dropdown({
+                allowAdditions: true,
+                hideAdditions: false,
+                keys: {
+                    delimiter: 32
+                }
+            })
+        ;
+        $('form.filter .clear.button')
+            .on('click', function () {
+                $('form.filter .ui.dropdown')
+                    .dropdown('clear')
+                ;
+            })
+        ;
+    </script>
+{% endblock %}

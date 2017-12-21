@@ -1,10 +1,11 @@
+from django.db import transaction
 from django.db.models import F
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views import generic
 
-from quiz.models import Question, Tag, Quiz
+from quiz.models import Question, Tag, Quiz, Answer
 
 
 class SearchView(generic.TemplateView):
@@ -68,3 +69,22 @@ class QuizCreateView(generic.View):
         quiz, _ = Quiz.objects.get_or_create(name=name)
         quiz.questions.set(questions)
         return HttpResponseRedirect(reverse('quiz', args=(name,)))
+
+
+class QuestionCreateView(generic.TemplateView):
+    template_name = 'createQuestion.html'
+    model = Question
+
+    extra_context = {
+        'tags': Tag.objects.all()
+    }
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        params = request.POST
+        question = Question.objects.create(text=params['question'])
+        question.tags.set(params.getlist('tags'))
+        for option in params.getlist('incorrect-options'):
+            Answer.objects.create(text=option, question=question, correct=False)
+        Answer.objects.create(text=params['answer'], question=question, correct=True)
+        return self.get(self, request, *args, **kwargs)
