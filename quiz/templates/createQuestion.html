@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
     {% if view.submitted %}
-        <h1>"{{ view.submitted }}" submitted.</h1>
+        <div class="ui segment">
+            Submitted:
+            <h1 class="ui header">
+                {{ view.submitted.text }}
+                <div class="sub header">{{ view.submitted.tags.all|join:", " }}</div>
+            </h1>
+            <div class="ui list">
+                {% for answer in view.submitted.answer_set.all %}
+                    <div class="{{ answer.correct }} item">{{ answer.text }}</div>
+                {% endfor %}
+            </div>
+        </div>
     {% endif %}
     <form class="ui create form" action="" method="post">
         {% csrf_token %}
@@ -61,4 +72,15 @@
             })
         ;
     </script>
+{% endblock %}
+{% block head %}
+    <style>
+        .item {
+            color: red;
+        }
+
+        .True.item {
+            color: green;
+        }
+    </style>
 {% endblock %}
