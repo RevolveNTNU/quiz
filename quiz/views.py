@@ -11,12 +11,10 @@ from quiz.models import Question, Tag, Quiz, Answer
 class SearchView(generic.TemplateView):
     template_name = 'search.html'
     http_method_names = ['get']
-    extra_context = {
-        'tags': Tag.objects.all()
-    }
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all()
         context['questions'] = Question.objects.filter(
             tags__in=request.GET.getlist('include')
         ).exclude(
@@ -71,20 +69,19 @@ class QuizCreateView(generic.View):
         return HttpResponseRedirect(reverse('quiz', args=(name,)))
 
 
-class QuestionCreateView(generic.TemplateView):
+class QuestionCreateView(generic.ListView):
     template_name = 'createQuestion.html'
-    model = Question
+    model = Tag
+    context_object_name = 'tags'
     submitted = None
-
-    extra_context = {
-        'tags': Tag.objects.all()
-    }
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         params = request.POST
         question = Question.objects.create(text=params['question'])
-        question.tags.set(params.getlist('tags'))
+        for tag in params.getlist('tags'):
+            tag, created = Tag.objects.get_or_create(pk=tag)
+            tag.question_set.add(question)
         for option in params.getlist('incorrect-options'):
             Answer.objects.create(text=option, question=question, correct=False)
         Answer.objects.create(text=params['answer'], question=question, correct=True)
