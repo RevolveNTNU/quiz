@@ -73,17 +73,25 @@ class QuestionCreateView(generic.ListView):
     template_name = 'createQuestion.html'
     model = Tag
     context_object_name = 'tags'
-    submitted = None
+    question = None
+    auto_included_tags = [Tag.objects.get_or_create(pk=tag)[0] for tag in [
+        'team18',
+        'not-verified'
+    ]]
+
+    def apply_tags(self, pk_extra_tags=None):
+        for tag in self.auto_included_tags:
+            tag.question_set.add(self.question)
+        for tag in pk_extra_tags:
+            tag, created = Tag.objects.get_or_create(pk=tag)
+            tag.question_set.add(self.question)
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         params = request.POST
-        question = Question.objects.create(text=params['question'])
-        for tag in params.getlist('tags'):
-            tag, created = Tag.objects.get_or_create(pk=tag)
-            tag.question_set.add(question)
+        self.question = Question.objects.create(text=params['question'])
+        self.apply_tags(pk_extra_tags=params.getlist('tags'))
+        Answer.objects.create(text=params['answer'], question=self.question, correct=True)
         for option in params.getlist('incorrect-options'):
-            Answer.objects.create(text=option, question=question, correct=False)
-        Answer.objects.create(text=params['answer'], question=question, correct=True)
-        self.submitted = question
+            Answer.objects.create(text=option, question=self.question, correct=False)
         return self.get(self, request, *args, **kwargs)

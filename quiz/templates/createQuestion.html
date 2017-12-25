@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="ui container">
-        {% if view.submitted %}
+        {% if view.question %}
             <div class="ui bottom attached segment">
                 Submitted:
                 <h1 class="ui header">
-                    {{ view.submitted.text }}
-                    <div class="sub header">{{ view.submitted.tags.all|join:", " }}</div>
+                    {{ view.question.text }}
+                    <div class="sub header">{{ view.question.tags.all|join:", " }}</div>
                 </h1>
                 <div class="ui list">
-                    {% for answer in view.submitted.answer_set.all %}
+                    {% for answer in view.question.answer_set.all %}
                         <div class="{{ answer.correct }} item">{{ answer.text }}</div>
                     {% endfor %}
                 </div>
