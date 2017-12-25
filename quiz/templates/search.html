@@ -70,6 +70,13 @@
                             <td class="right aligned">{{ question.get_answer_count }}</td>
                             <td class="right aligned">{{ question.get_wrong_answer_count }}</td>
                         </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="center aligned">
+                                No questions found, try adding a tag to "Include tags" or removing a tag from "Exclude
+                                tags"
+                            </td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>
