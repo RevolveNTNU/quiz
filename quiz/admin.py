@@ -14,6 +14,6 @@ class AnswerInline(admin.StackedInline):
 
 
 @admin.register(Question)
-class QuizAdmin(admin.ModelAdmin):
+class QuestionAdmin(admin.ModelAdmin):
     filter_horizontal = ['tags']
     inlines = [AnswerInline]
