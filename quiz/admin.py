@@ -15,5 +15,6 @@ class AnswerInline(admin.StackedInline):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
+    date_hierarchy = 'timestamp'
     filter_horizontal = ['tags']
     inlines = [AnswerInline]
