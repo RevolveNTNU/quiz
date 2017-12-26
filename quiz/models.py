@@ -11,6 +11,7 @@ class Tag(models.Model):
 class Question(models.Model):
     text = models.TextField()
     tags = models.ManyToManyField(Tag)
+    timestamp = models.DateTimeField(auto_now=True)
 
     def get_answer_count(self):
         return self.answer_set.aggregate(models.Sum('answered'))['answered__sum']
