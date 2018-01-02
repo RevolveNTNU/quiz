@@ -16,12 +16,10 @@
                         <div class="grouped {{ forloop.counter }} fields">
                             {% for answer in question.shuffled_answers %}
                                 <div class="field">
-                                    <div class="ui massive radio checkbox">
                                         <input id="{{ answer.pk }}" name="{{ question.pk }}" value="{{ answer.pk }}"
                                                tabindex="0"
                                                type="radio">
                                         <label for="{{ answer.pk }}">{{ answer.text }}</label>
-                                    </div>
                                 </div>
                             {% endfor %}
                         </div>
@@ -70,8 +68,31 @@
 {% endblock %}
 {% block head %}
     <style>
-        .ui.checkbox.massive {
-            font-size: 1.2em;
+        .ui.form .field > label {
+            font-weight: normal;
+            line-height: 1.1em;
+            cursor: pointer;
+        }
+
+        .ui.form .field input:checked + label {
+            font-weight: bold;
+        }
+
+        .ui.form .field label:before {
+            font-family: Icons;
+            content: "\f10c";
+            padding-right: 1em;
+        }
+
+        .ui.form .field input:checked + label:before {
+            font-family: Icons;
+            content: "\f05d";
+            padding-right: 1em;
+        }
+
+        .ui.form .field input {
+            opacity: 0;
+            position: absolute;
         }
     </style>
 {% endblock %}
