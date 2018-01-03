@@ -23,6 +23,11 @@ class SearchView(generic.TemplateView):
         return self.render_to_response(context)
 
 
+class QuizListView(generic.ListView):
+    template_name = 'quiz_list.html'
+    model = Quiz
+
+
 class QuizView(generic.DetailView):
     template_name = 'quiz.html'
     model = Quiz
