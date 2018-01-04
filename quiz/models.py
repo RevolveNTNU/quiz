@@ -44,5 +44,5 @@ class Quiz(models.Model):
 
 class QuestionAttempt(models.Model):
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
-    answer = models.ForeignKey(to=Answer, on_delete=models.CASCADE)
+    answer = models.ForeignKey(to=Answer, null=True, on_delete=models.CASCADE)
     duration = models.FloatField()
