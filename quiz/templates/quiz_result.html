@@ -16,7 +16,7 @@
                 <div id="{{ attempt.question.pk }}" class="ui big list">
                     {% for answer in attempt.question.answer_set.all %}
                         <span class="{% if answer.correct %}correct{% endif %}
-{% if answer.pk is attempt.answer.pk %}answered{% endif %} answer item">{{ answer.text }}</span>
+{% if answer.pk == attempt.answer.pk %}answered{% endif %} answer item">{{ answer.text }}</span>
                     {% endfor %}
                 </div>
             </div>
