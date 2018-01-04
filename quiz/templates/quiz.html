@@ -38,13 +38,13 @@
                     {% endif %}
                     <div class="ui disabled input" style="float: right;">
                         <input id="timer{{ forloop.counter }}" title="timer{{ forloop.counter }}"
-                               name="timer{{ forloop.counter }}" type="text" style="width: 4.6em; text-align: center">
+                               name="timer{{ question.pk }}" type="text" style="width: 4.6em; text-align: center">
                     </div>
                 </div>
             {% endfor %}
             <div class="ui clearing bottom attached segment">
                 <div class="ui disabled input" style="float: right">
-                    <input id="timer0" title="timer0" name="timer0" type="text"
+                    <input id="timer0" title="timer0" name="timer" type="text"
                            style="width: 4.65em; text-align: center">
                 </div>
                 <span id="pagenumber" style="float: left; padding: 0.678571em"></span>

@@ -6,6 +6,7 @@
     <div class="ui center aligned container">
         <h1 class="ui header">{{ quiz.name }}</h1>
         <h3 id="result"></h3>
+        <h3>Total duration: {{ request.POST.timer }}s</h3>
         {% for question in quiz.questions.all %}
             <div class="ui question segment">
                 <h2>{{ question.text }}</h2>
