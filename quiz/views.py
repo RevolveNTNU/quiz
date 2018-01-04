@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.views import generic
 
-from quiz.models import Question, Tag, Quiz, Answer
+from quiz.models import Question, Tag, Quiz, Answer, QuestionAttempt
 
 
 class SearchView(generic.TemplateView):
@@ -48,18 +48,24 @@ class QuizResultView(generic.DetailView):
             ]
         return context
 
-    def increment_answered(self, quiz):
+    def register_submission(self, quiz):
+        params = self.request.POST
         for question in quiz.questions.all():
             try:
-                answer_pk = int(self.request.POST.get(str(question.pk)))
+                answer_pk = int(params.get(str(question.pk)))
+                QuestionAttempt.objects.create(
+                    question=question,
+                    duration=float(params.get('timer{}'.format(question.pk))),
+                    answer_id=answer_pk
+                )
             except TypeError:
-                break
+                continue
             # Atomic incrementation
             question.answer_set.filter(pk=answer_pk).update(answered=F('answered') + 1)
 
     def post(self, request, *args, **kwargs):
         quiz = get_object_or_404(Quiz, pk=kwargs['pk'])
-        self.increment_answered(quiz)
+        self.register_submission(quiz)
         return self.get(self, request, *args, **kwargs)
 
 
