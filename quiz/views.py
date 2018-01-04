@@ -3,6 +3,7 @@ from django.db.models import F
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils.text import slugify
 from django.views import generic
 
 from quiz.models import Question, Tag, Quiz, Answer
@@ -65,7 +66,7 @@ class QuizResultView(generic.DetailView):
 class QuizCreateView(generic.View):
 
     def post(self, request, *args, **kwargs):
-        name = request.POST['name']
+        name = slugify(request.POST['name'])
         if not name:
             return HttpResponseBadRequest('Name is required')
         questions = request.POST.getlist('questions')
