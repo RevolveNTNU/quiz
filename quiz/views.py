@@ -37,29 +37,24 @@ class QuizView(generic.DetailView):
 class QuizResultView(generic.DetailView):
     template_name = 'quiz_result.html'
     model = Quiz
-    request = None
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['answered'] = [
-                int(answer) for question, answer in self.request.POST.items()
-                if question.isdigit() and answer.isdigit()
-            ]
-        return context
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.request = None
+        self.question_attempts = []
 
     def register_submission(self, quiz):
         params = self.request.POST
         for question in quiz.questions.all():
             try:
                 answer_pk = int(params.get(str(question.pk)))
-                QuestionAttempt.objects.create(
-                    question=question,
-                    duration=float(params.get('timer{}'.format(question.pk))),
-                    answer_id=answer_pk
-                )
             except TypeError:
-                continue
+                answer_pk = None
+            self.question_attempts.append(QuestionAttempt.objects.create(
+                question=question,
+                duration=float(params.get('timer{}'.format(question.pk))),
+                answer_id=answer_pk
+            ))
             # Atomic incrementation
             question.answer_set.filter(pk=answer_pk).update(answered=F('answered') + 1)
 
