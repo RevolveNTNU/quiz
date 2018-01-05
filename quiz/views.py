@@ -17,6 +17,12 @@ class SearchView(generic.TemplateView):
         super().__init__(**kwargs)
         self.request = None
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['include'] = self.request.GET.getlist('include')
+        context['exclude'] = self.request.GET.getlist('exclude')
+        return context
+
     def build_filter_kwargs(self):
         filter_kwargs = {'tags__in': self.request.GET.getlist('include')}
         max_answered = self.request.GET.get('max_answered')

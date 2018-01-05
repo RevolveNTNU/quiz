@@ -7,7 +7,8 @@
                     <label for="include" class="text">Include tags</label>
                     <select id="include" name="include" class="ui fluid search dropdown" multiple>
                         {% for tag in tags %}
-                            <option value="{{ tag }}">{{ tag }}</option>
+                            <option value="{{ tag }}" {% if tag.name in include %}selected{% endif %}>{{ tag }}</option>
+                            {{ tag.name }}
                         {% endfor %}
                     </select>
                 </div>
@@ -15,7 +16,7 @@
                     <label for="exclude" class="text">Exclude tags</label>
                     <select id="exclude" name="exclude" class="ui fluid search dropdown" multiple>
                         {% for tag in tags %}
-                            <option value="{{ tag }}">{{ tag }}</option>
+                            <option value="{{ tag }}" {% if tag.name in exclude %}selected{% endif %}>{{ tag }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -116,16 +117,7 @@
             return array;
         }
 
-        function getParameterByName(name) {
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                results = regex.exec(location.search);
-            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
-
         $(document).ready(function () {
-            $('#include').val(getParameterByName('include'));
-            $('#exclude').val(getParameterByName('exclude'));
 
             $('#select-all')
                 .on('click', function () {
@@ -150,15 +142,7 @@
             ;
 
             $('form.filter .ui.dropdown')
-                .dropdown({})
-            ;
-
-            $('form.filter .clear.button')
-                .on('click', function () {
-                    $('form.filter .ui.dropdown')
-                        .dropdown('clear')
-                    ;
-                })
+                .dropdown()
             ;
 
             $('.selectable tbody > tr')
