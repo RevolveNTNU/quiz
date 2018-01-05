@@ -30,10 +30,18 @@
                 </div>
             </form>
             <div class="ui divider"></div>
-            <div class="ui fluid left labeled input">
-                <a id="select-button" class="ui label">Select random</a>
-                <input title="select-amount" id="select-amount" value="15" type="number">
+            <label for="select-amount" class="big bold text">Select</label>
+            <div class="field">
+                <div class="ui fluid input">
+                    <input id="select-amount" value="15" min="0" type="number">
+                </div>
             </div>
+            <div class="ui fluid buttons">
+                <button id="select-random-button" class="ui button">Random</button>
+                <div class="or"></div>
+                <button id="select-first-button" class="ui button">First</button>
+            </div>
+            <div class="ui divider"></div>
             <div class="field">
                 <button id="select-all" class="ui fluid button">Select all</button>
             </div>
@@ -125,11 +133,18 @@
                 })
             ;
 
-            $('#select-button')
+            $('#select-random-button')
                 .on('click', function () {
                     amount = $('#select-amount').val();
                     options = shuffle($('.checkbox:not(.checked)')).slice(0, amount);
-                    console.log(options);
+                    options.checkbox('check');
+                })
+            ;
+
+            $('#select-first-button')
+                .on('click', function () {
+                    amount = $('#select-amount').val();
+                    options = $('.checkbox:not(.checked)').slice(0, amount);
                     options.checkbox('check');
                 })
             ;
