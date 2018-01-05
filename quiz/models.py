@@ -33,6 +33,9 @@ class Quiz(models.Model):
     name = models.SlugField(max_length=16, primary_key=True)
     questions = models.ManyToManyField(Question)
 
+    def __str__(self):
+        return self.name
+
 
 class QuestionAttempt(models.Model):
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
