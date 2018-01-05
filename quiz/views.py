@@ -33,7 +33,7 @@ class SearchView(generic.TemplateView):
             **self.build_filter_kwargs()
         ).exclude(
             tags__in=request.GET.getlist('exclude')
-        )
+        ).order_by('answered_count')
         return self.render_to_response(context)
 
 
