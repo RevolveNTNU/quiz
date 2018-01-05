@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.db.models import F, Count
+from django.db.models import Count
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -68,8 +68,6 @@ class QuizResultView(generic.DetailView):
                 duration=float(params.get('timer{}'.format(question.pk))),
                 answer_id=answer_pk
             ))
-            # Atomic incrementation
-            question.answer_set.filter(pk=answer_pk).update(answered=F('answered') + 1)
 
     def post(self, request, *args, **kwargs):
         quiz = get_object_or_404(Quiz, pk=kwargs['pk'])
