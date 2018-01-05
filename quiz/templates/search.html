@@ -20,6 +20,12 @@
                     </select>
                 </div>
                 <div class="field">
+                    <label for="max_answered" class="text">Max answered count</label>
+                    <div class="field">
+                        <input id="max_answered" name="max_answered" class="ui fluid search dropdown" type="number">
+                    </div>
+                </div>
+                <div class="field">
                     <button class="ui fluid button"><i class="filter icon"></i>Filter</button>
                 </div>
             </form>
@@ -52,8 +58,7 @@
                         <th style="width: calc(17px + 1.4em)"></th>
                         <th style="width: 70%">Question</th>
                         <th style="width: 30%">Tags</th>
-                        <th style="width: 5em">Total</th>
-                        <th style="width: 5em">Wrong</th>
+                        <th style="width: 6em">Answered</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,12 +72,11 @@
                             </td>
                             <td>{{ question }}</td>
                             <td>{{ question.tags.all|join:", " }}</td>
-                            <td class="right aligned">{{ question.get_answer_count }}</td>
-                            <td class="right aligned">{{ question.get_wrong_answer_count }}</td>
+                            <td>{{ question.answered_count }} times</td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="5" class="center aligned">
+                            <td colspan="4" class="center aligned">
                                 No questions found, try adding a tag to "Include tags" or removing a tag from "Exclude
                                 tags"
                             </td>

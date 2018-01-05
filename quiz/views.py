@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.db.models import F
+from django.db.models import F, Count
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -13,11 +13,24 @@ class SearchView(generic.TemplateView):
     template_name = 'search.html'
     http_method_names = ['get']
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.request = None
+
+    def build_filter_kwargs(self):
+        filter_kwargs = {'tags__in': self.request.GET.getlist('include')}
+        max_answered = self.request.GET.get('max_answered')
+        if max_answered:
+            filter_kwargs['answered_count__lte'] = max_answered
+        return filter_kwargs
+
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         context['tags'] = Tag.objects.all()
-        context['questions'] = Question.objects.filter(
-            tags__in=request.GET.getlist('include')
+        context['questions'] = Question.objects.annotate(
+            answered_count=Count('questionattempt')
+        ).filter(
+            **self.build_filter_kwargs()
         ).exclude(
             tags__in=request.GET.getlist('exclude')
         )
