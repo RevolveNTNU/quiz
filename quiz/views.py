@@ -98,10 +98,13 @@ class QuestionCreateView(generic.ListView):
     model = Tag
     context_object_name = 'tags'
     question = None
-    auto_included_tags = [Tag.objects.get_or_create(pk=tag)[0] for tag in [
-        'team18',
-        'not-verified'
-    ]]
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.auto_included_tags = [Tag.objects.get_or_create(pk=tag)[0] for tag in [
+            'team18',
+            'not-verified'
+        ]]
 
     def apply_tags(self, pk_extra_tags=None):
         for tag in self.auto_included_tags:
