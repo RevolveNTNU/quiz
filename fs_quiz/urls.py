@@ -23,7 +23,8 @@ urlpatterns = [
     path('create_quiz', QuizCreateView.as_view(), name='create_quiz'),
     path('create_question', QuestionCreateView.as_view(), name='create_question'),
     path('quiz', QuizListView.as_view(), name='quiz_list'),
-    path('quiz/<slug:pk>', QuizView.as_view(), name='quiz'),
+    path('quiz/<slug:pk>', QuizView.as_view(template_name='quiz.html'), name='quiz'),
+    path('quiz_old/<slug:pk>', QuizView.as_view(template_name='quiz_old.html'), name='quiz_old'),
     path('quiz_result/<slug:pk>', QuizResultView.as_view(), name='quiz_result'),
     path('admin/', admin.site.urls),
 ]
