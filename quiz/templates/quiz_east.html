@@ -74,7 +74,7 @@
             }
             $('#results').html(correctCount + '/' + questions);
             button.addClass('disabled');
-            button.html((Date.now() - startTime) / 1000 + 30 * (questions - correctCount))
+            button.html((Date.now() - startTime) / 1000 + 90 * (questions - correctCount))
         }
     </script>
 {% endblock %}
