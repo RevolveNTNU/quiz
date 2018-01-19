@@ -11,7 +11,7 @@
         </div>
         {% for question in quiz.questions.all %}
             <div class="ui question left aligned segment">
-                <h2>{{ question.text }}</h2>
+                <h2>{{ forloop.counter }}: {{ question.text }}</h2>
                 <div class="ui divider"></div>
                 <div class="ui massive form">
                     <div class="grouped {{ forloop.counter }} fields">
