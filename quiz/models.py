@@ -33,6 +33,9 @@ class Quiz(models.Model):
     name = models.SlugField(max_length=16, primary_key=True)
     questions = models.ManyToManyField(Question)
 
+    def shuffled_questions(self):
+        return self.questions.order_by('?')
+
     def __str__(self):
         return self.name
 

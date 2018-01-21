@@ -11,7 +11,7 @@
                 <a class="ui huge primary next button" tabindex="0"
                    onclick="nextTab()">Start</a>
             </div>
-            {% for question in quiz.questions.all %}
+            {% for question in quiz.shuffled_questions %}
                 <div class="ui question left aligned top attached tab segment"
                      data-tab="{{ forloop.counter }}">
                     <h2>{{ question.text }}</h2>
