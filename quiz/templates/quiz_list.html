@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="ui center aligned container">
+        <div class="ui massive list">
+            {% for quiz in quiz_list %}
+                <div class="item">
+                    <div class="content">
+                        <a href="{% url 'quiz' quiz.name %}">
+                            {{ quiz.name }}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

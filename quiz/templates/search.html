@@ -7,7 +7,8 @@
                     <label for="include" class="text">Include tags</label>
                     <select id="include" name="include" class="ui fluid search dropdown" multiple>
                         {% for tag in tags %}
-                            <option value="{{ tag }}">{{ tag }}</option>
+                            <option value="{{ tag }}" {% if tag.name in include %}selected{% endif %}>{{ tag }}</option>
+                            {{ tag.name }}
                         {% endfor %}
                     </select>
                 </div>
@@ -15,19 +16,34 @@
                     <label for="exclude" class="text">Exclude tags</label>
                     <select id="exclude" name="exclude" class="ui fluid search dropdown" multiple>
                         {% for tag in tags %}
-                            <option value="{{ tag }}">{{ tag }}</option>
+                            <option value="{{ tag }}" {% if tag.name in exclude %}selected{% endif %}>{{ tag }}</option>
                         {% endfor %}
                     </select>
+                </div>
+                <div class="field">
+                    <label for="max_answered" class="text">Max answered count</label>
+                    <div class="field">
+                        <input id="max_answered" name="max_answered" class="ui fluid search dropdown" type="number"
+                               value="{{ request.GET.max_answered }}">
+                    </div>
                 </div>
                 <div class="field">
                     <button class="ui fluid button"><i class="filter icon"></i>Filter</button>
                 </div>
             </form>
             <div class="ui divider"></div>
-            <div class="ui fluid left labeled input">
-                <a id="select-button" class="ui label">Select random</a>
-                <input title="select-amount" id="select-amount" value="15" type="number">
+            <label for="select-amount" class="big bold text">Select</label>
+            <div class="field">
+                <div class="ui fluid input">
+                    <input id="select-amount" value="15" min="0" type="number">
+                </div>
             </div>
+            <div class="ui fluid buttons">
+                <button id="select-random-button" class="ui button">Random</button>
+                <div class="or"></div>
+                <button id="select-first-button" class="ui button">First</button>
+            </div>
+            <div class="ui divider"></div>
             <div class="field">
                 <button id="select-all" class="ui fluid button">Select all</button>
             </div>
@@ -52,8 +68,7 @@
                         <th style="width: calc(17px + 1.4em)"></th>
                         <th style="width: 70%">Question</th>
                         <th style="width: 30%">Tags</th>
-                        <th style="width: 5em">Total</th>
-                        <th style="width: 5em">Wrong</th>
+                        <th style="width: 6em">Answered</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,12 +82,11 @@
                             </td>
                             <td>{{ question }}</td>
                             <td>{{ question.tags.all|join:", " }}</td>
-                            <td class="right aligned">{{ question.get_answer_count }}</td>
-                            <td class="right aligned">{{ question.get_wrong_answer_count }}</td>
+                            <td>{{ question.answered_count }} times</td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="5" class="center aligned">
+                            <td colspan="4" class="center aligned">
                                 No questions found, try adding a tag to "Include tags" or removing a tag from "Exclude
                                 tags"
                             </td>
@@ -104,16 +118,7 @@
             return array;
         }
 
-        function getParameterByName(name) {
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                results = regex.exec(location.search);
-            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
-
         $(document).ready(function () {
-            $('#include').val(getParameterByName('include'));
-            $('#exclude').val(getParameterByName('exclude'));
 
             $('#select-all')
                 .on('click', function () {
@@ -121,25 +126,24 @@
                 })
             ;
 
-            $('#select-button')
+            $('#select-random-button')
                 .on('click', function () {
                     amount = $('#select-amount').val();
                     options = shuffle($('.checkbox:not(.checked)')).slice(0, amount);
-                    console.log(options);
+                    options.checkbox('check');
+                })
+            ;
+
+            $('#select-first-button')
+                .on('click', function () {
+                    amount = $('#select-amount').val();
+                    options = $('.checkbox:not(.checked)').slice(0, amount);
                     options.checkbox('check');
                 })
             ;
 
             $('form.filter .ui.dropdown')
-                .dropdown({})
-            ;
-
-            $('form.filter .clear.button')
-                .on('click', function () {
-                    $('form.filter .ui.dropdown')
-                        .dropdown('clear')
-                    ;
-                })
+                .dropdown()
             ;
 
             $('.selectable tbody > tr')

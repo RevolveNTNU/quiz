@@ -16,13 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from quiz.views import SearchView, QuizCreateView, QuizView, QuizResultView, QuestionCreateView
+from quiz.views import SearchView, QuizCreateView, QuizListView, QuizView, QuizResultView, QuestionCreateView
 
 urlpatterns = [
     path('', SearchView.as_view()),
     path('create_quiz', QuizCreateView.as_view(), name='create_quiz'),
     path('create_question', QuestionCreateView.as_view(), name='create_question'),
-    path('quiz/<slug:pk>', QuizView.as_view(), name='quiz'),
+    path('quiz', QuizListView.as_view(), name='quiz_list'),
+    path('quiz/<slug:pk>', QuizView.as_view(template_name='quiz.html'), name='quiz'),
+    path('quiz_old/<slug:pk>', QuizView.as_view(template_name='quiz_old.html'), name='quiz_old'),
+    path('quiz_east/<slug:pk>', QuizView.as_view(template_name='quiz_east.html'), name='quiz_east'),
     path('quiz_result/<slug:pk>', QuizResultView.as_view(), name='quiz_result'),
     path('admin/', admin.site.urls),
 ]

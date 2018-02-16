@@ -13,13 +13,6 @@ class Question(models.Model):
     tags = models.ManyToManyField(Tag)
     timestamp = models.DateTimeField(auto_now=True)
 
-    def get_answer_count(self):
-        return self.answer_set.aggregate(models.Sum('answered'))['answered__sum']
-
-    def get_wrong_answer_count(self):
-        return self.answer_set.filter(correct=False).aggregate(
-            models.Sum('answered'))['answered__sum']
-
     def shuffled_answers(self):
         return self.answer_set.order_by('?')
 
@@ -30,7 +23,6 @@ class Question(models.Model):
 class Answer(models.Model):
     text = models.TextField()
     correct = models.BooleanField()
-    answered = models.IntegerField(default=0)
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -40,3 +32,15 @@ class Answer(models.Model):
 class Quiz(models.Model):
     name = models.SlugField(max_length=16, primary_key=True)
     questions = models.ManyToManyField(Question)
+
+    def shuffled_questions(self):
+        return self.questions.order_by('?')
+
+    def __str__(self):
+        return self.name
+
+
+class QuestionAttempt(models.Model):
+    question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
+    answer = models.ForeignKey(to=Answer, null=True, on_delete=models.CASCADE)
+    duration = models.FloatField()

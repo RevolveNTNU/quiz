@@ -7,8 +7,12 @@
         <h1 class="ui header">{{ quiz.name }}</h1>
         <form action="{% url 'quiz_result' quiz.pk %}" method="post">
             {% csrf_token %}
-            {% for question in quiz.questions.all %}
-                <div class="ui question tab segment"
+            <div class="ui question active tob attached tab segment" data-tab="0">
+                <a class="ui huge primary next button" tabindex="0"
+                   onclick="nextTab()">Start</a>
+            </div>
+            {% for question in quiz.shuffled_questions %}
+                <div class="ui question left aligned top attached tab segment"
                      data-tab="{{ forloop.counter }}">
                     <h2>{{ question.text }}</h2>
                     <div class="ui divider"></div>
@@ -16,37 +20,66 @@
                         <div class="grouped {{ forloop.counter }} fields">
                             {% for answer in question.shuffled_answers %}
                                 <div class="field">
-                                        <input id="{{ answer.pk }}" name="{{ question.pk }}" value="{{ answer.pk }}"
-                                               tabindex="0"
-                                               type="radio">
-                                        <label for="{{ answer.pk }}">{{ answer.text }}</label>
+                                    <input id="{{ answer.pk }}" name="{{ question.pk }}" value="{{ answer.pk }}"
+                                           tabindex="0"
+                                           type="radio">
+                                    <label for="{{ answer.pk }}">{{ answer.text }}</label>
                                 </div>
                             {% endfor %}
                         </div>
                     </div>
                     {% if forloop.last %}
                         <button class="ui huge primary {{ question.pk }} button"
-                                tabindex="1">Submit<i class="right arrow icon"></i></button>
+                                tabindex="1">Submit
+                        </button>
                     {% else %}
                         <a class="ui huge primary next button" tabindex="1"
                            onclick="nextTab()">Next<i class="right arrow icon"></i></a>
                     {% endif %}
+                    <div class="ui disabled input" style="float: right;">
+                        <input id="timer{{ forloop.counter }}" title="timer{{ forloop.counter }}"
+                               name="timer{{ question.pk }}" type="text" style="width: 4.6em; text-align: center">
+                    </div>
                 </div>
             {% endfor %}
+            <div class="ui clearing bottom attached segment">
+                <div class="ui disabled input" style="float: right">
+                    <input id="timer0" title="timer0" name="timer" type="text"
+                           style="width: 4.65em; text-align: center">
+                </div>
+                <span id="pagenumber" style="float: left; padding: 0.678571em"></span>
+            </div>
         </form>
-        <div id="pagenumber"></div>
     </div>
     <script>
         var tab = 0;
-        var tabs = {{ quiz.questions.count }}
-            $('.ui.radio.checkbox')
-                .checkbox()
-        ;
-        $
-            .tab()
-        ;
+        var tabs = {{ quiz.questions.count }};
+        var startTimes = [];
+        var mainTimer = $('#timer0');
+
+        $('.ui.radio.checkbox').checkbox();
+
+        $.tab();
+
+        function getTimeSince(startTimeIndex) {
+            return ((Date.now() - startTimes[startTimeIndex]) / 1000).toFixed(1)
+        }
+
+        function startTimer() {
+            setInterval(
+                function () {
+                    mainTimer.val(getTimeSince(0));
+                    $('#timer' + tab).val(getTimeSince(tab - 1));
+                },
+                100
+            )
+        }
 
         function nextTab() {
+            startTimes.push(Date.now());
+            if (startTimes.length === 1) {
+                startTimer();
+            }
             if (++tab > tabs) {
                 $('form').submit();
             }
@@ -63,7 +96,6 @@
                 e.preventDefault()
             }
         });
-        nextTab();
     </script>
 {% endblock %}
 {% block head %}

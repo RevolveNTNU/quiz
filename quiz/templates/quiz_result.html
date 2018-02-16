@@ -5,15 +5,18 @@
 {% block content %}
     <div class="ui center aligned container">
         <h1 class="ui header">{{ quiz.name }}</h1>
-        <h3 id="result"></h3>
-        {% for question in quiz.questions.all %}
+        <h3>
+            Dere brukte <u>{{ request.POST.timer }}s</u> og <u id="result"></u> var riktig.
+        </h3>
+        {% for attempt in view.question_attempts %}
             <div class="ui question segment">
-                <h2>{{ question.text }}</h2>
+                <h3>{{ attempt.duration }}s</h3>
+                <h2>{{ attempt.question.text }}</h2>
                 <div class="ui divider"></div>
-                <div id="{{ question.pk }}" class="ui big list">
-                    {% for answer in question.answer_set.all %}
+                <div id="{{ attempt.question.pk }}" class="ui big list">
+                    {% for answer in attempt.question.answer_set.all %}
                         <span class="{% if answer.correct %}correct{% endif %}
-{% if answer.pk in answered %}answered{% endif %} answer item">{{ answer.text }}</span>
+{% if answer.pk == attempt.answer.pk %}answered{% endif %} answer item">{{ answer.text }}</span>
                     {% endfor %}
                 </div>
             </div>
@@ -22,11 +25,15 @@
     <script>
         var correctCount = $('.answered.correct').length;
         var questions = {{ quiz.questions.count }};
-        $('#result').html(correctCount + '/' + questions);
+        $('#result').html(correctCount + ' av ' + questions);
     </script>
 {% endblock %}
 {% block head %}
     <style>
+        h3 > u {
+            font-size: 1.5em;
+        }
+
         .answer {
             color: grey;
         }
